@@ -6,6 +6,7 @@ public class GunBehaviour : MonoBehaviour
     public GameObject Bullet = null;
     public Transform GunPoint = null;
     public int MagazineSize = 9;
+    public bool AutoReload = true;
     
     private AudioSource cmp_audioSource;
     private ParticleSystem cmp_burstParticles;
@@ -49,16 +50,26 @@ public class GunBehaviour : MonoBehaviour
     public void Shoot()
     {
         bool hasGun = Bullet != null && GunPoint != null;
-        bool canShoot = this.currentMagazineSize > 0;
+        bool hasBullets = this.currentMagazineSize > 0;
 
-        if (hasGun && canShoot)
+        if (hasGun)
         {
-            this.currentMagazineSize -= 1;
-            this.PlaySound();
-            this.cmp_burstParticles.Play();
-            
-            GameObject.Instantiate(Bullet, GunPoint);
-            UIManager.Instance.UpdateMagazineUI(this.currentMagazineSize, this.MagazineSize);
+            if (hasBullets) 
+            {
+                this.currentMagazineSize -= 1;
+                this.PlaySound();
+                this.cmp_burstParticles.Play();
+
+                GameObject.Instantiate(Bullet, GunPoint);
+                UIManager.Instance.UpdateMagazineUI(this.currentMagazineSize, this.MagazineSize);
+            }
+            else
+            {
+                if (this.AutoReload)
+                {
+                    Reload();
+                }
+            }
         }
     }
 
