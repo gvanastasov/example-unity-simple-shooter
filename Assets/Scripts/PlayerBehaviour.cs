@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -55,6 +56,19 @@ public class PlayerBehaviour : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Shoot();
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Reload();
+        }
+    }
+
+    private void Reload()
+    {
+        if (gun != null)
+        {
+            gun.Reload();
         }
     }
 
