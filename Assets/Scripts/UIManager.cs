@@ -1,8 +1,13 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
+    public GameObject MainMenuGUI;
+    public GameObject PauseGUI;
+    public GameObject IngameGUI;
+
     public static UIManager Instance 
     {
         get;
@@ -11,6 +16,8 @@ public class UIManager : MonoBehaviour
 
     public TMP_Text magazineElement;
     public TMP_Text ammunitionElement;
+
+    private List<GameObject> GUIs;
 
     private void Awake()
     {
@@ -22,6 +29,8 @@ public class UIManager : MonoBehaviour
         {
             Instance = this;
         }
+
+        this.GUIs = new List<GameObject> { MainMenuGUI, PauseGUI, IngameGUI };
     }
 
     public void UpdateMagazineUI(int currentSize, int maxSize)
@@ -38,5 +47,16 @@ public class UIManager : MonoBehaviour
         {
             ammunitionElement.text = $"Ammu: {count}";
         }
+    }
+
+    public void Show(GameObject GUI)
+    {
+        var targetInstanceId = GUI.GetInstanceID();
+        this.GUIs.ForEach(x => {
+            if (x != null)
+            {
+                x.SetActive(x.GetInstanceID() == targetInstanceId);
+            }
+        });
     }
 }

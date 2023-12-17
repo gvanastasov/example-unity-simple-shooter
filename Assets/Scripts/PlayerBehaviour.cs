@@ -62,6 +62,11 @@ public class PlayerBehaviour : MonoBehaviour
         {
             Reload();
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            GameManager.Instance.Pause();
+        }
     }
 
     private void Reload()
