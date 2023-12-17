@@ -12,6 +12,7 @@ public class GunBehaviour : MonoBehaviour
     private ParticleSystem cmp_burstParticles;
 
     private int currentMagazineSize = 0;
+    private bool isPlayer = true;
 
     void Awake()
     {
@@ -27,6 +28,8 @@ public class GunBehaviour : MonoBehaviour
         this.cmp_audioSource = GetComponent<AudioSource>();
         this.cmp_burstParticles = GetComponentInChildren<ParticleSystem>();
 
+        this.isPlayer = GetComponentInParent<PlayerBehaviour>() != null;
+
         EnsureSetup();
         Reload();
     }
@@ -38,13 +41,23 @@ public class GunBehaviour : MonoBehaviour
             var main = this.cmp_burstParticles.main;
             main.loop = false;
         }
+        if (!isPlayer)
+        {
+            this.AutoReload = true;
+        }
     }
 
     public void Reload()
     {
-        var bullets = PlayerInventory.Instance.GetBullets(MagazineSize);
+        var bullets = this.isPlayer 
+            ? PlayerInventory.Instance.GetBullets(MagazineSize)
+            : this.MagazineSize;
         this.currentMagazineSize = bullets;
-        UIManager.Instance.UpdateMagazineUI(this.currentMagazineSize, this.MagazineSize);
+
+        if (isPlayer)
+        {
+            UIManager.Instance.UpdateMagazineUI(this.currentMagazineSize, this.MagazineSize);
+        }
     }
 
     public void Shoot()
@@ -61,7 +74,11 @@ public class GunBehaviour : MonoBehaviour
                 this.cmp_burstParticles.Play();
 
                 GameObject.Instantiate(Bullet, GunPoint);
-                UIManager.Instance.UpdateMagazineUI(this.currentMagazineSize, this.MagazineSize);
+
+                if (isPlayer)
+                {
+                    UIManager.Instance.UpdateMagazineUI(this.currentMagazineSize, this.MagazineSize);
+                }
             }
             else
             {
