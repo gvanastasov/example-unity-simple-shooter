@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour
     {
         this.cmp_playerBehaviour.enabled = true;
         this.ingame = true;
+        LevelManager.Instance.SpawnEnemies();
         UIManager.Instance.Show(UIManager.Instance.IngameGUI);
         Time.timeScale = 1;
     }
