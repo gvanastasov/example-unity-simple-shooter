@@ -14,6 +14,14 @@ public class LevelManager : MonoBehaviour
     public int currentLevel = 1;
     public int maxLevel = 5;
 
+    public bool HasNextLevel
+    {
+        get
+        {
+            return this.currentLevel + 1 <= maxLevel;
+        }
+    }
+
     public int EnemyCount
     {
         get

@@ -24,6 +24,7 @@ public class UIManager : MonoBehaviour
     public TMP_Text EnemiesTextElement;
     public Image EnemiesImageElement;
     public TMP_Text ScoreTextElement;
+    public TMP_Text LevelTextElement;
 
     private List<GameObject> GUIs;
 
@@ -89,6 +90,14 @@ public class UIManager : MonoBehaviour
         if (this.ScoreTextElement != null)
         {
             this.ScoreTextElement.text = $"Score: {value}";
+        }
+    }
+
+    public void UpdateLevelText(int value)
+    {
+        if (this.LevelTextElement != null)
+        {
+            this.LevelTextElement.text = $"Level: {value}";
         }
     }
 

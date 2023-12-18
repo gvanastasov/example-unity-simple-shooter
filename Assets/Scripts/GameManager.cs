@@ -9,11 +9,14 @@ public class GameManager : MonoBehaviour
         private set;
     }
 
-    private PlayerBehaviour cmp_playerBehaviour;
+    private PlayerBehaviour player;
 
     private bool ingame = false;
 
     private int currentScore = 0;
+
+    private Vector3 playerStartPos;
+    private Quaternion playerStartRot;
 
     private void Awake()
     {
@@ -24,14 +27,14 @@ public class GameManager : MonoBehaviour
         else
         {
             Instance = this;
-            this.cmp_playerBehaviour = FindFirstObjectByType<PlayerBehaviour>();
+            this.player = FindFirstObjectByType<PlayerBehaviour>();
             this.Main();
         }
     }
 
     public void Main()
     {
-        this.cmp_playerBehaviour.enabled = false;
+        this.player.enabled = false;
         UIManager.Instance.Show(UIManager.Instance.MainMenuGUI);
         Time.timeScale = 0;
 
@@ -41,21 +44,37 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void New() 
+    public void New()
     {
-        this.cmp_playerBehaviour.enabled = true;
+        SavePlayerSpawnPoint();
+
+        this.player.enabled = true;
         this.ingame = true;
         this.currentScore = 0;
         LevelManager.Instance.SpawnEnemies();
         UIManager.Instance.Show(UIManager.Instance.IngameGUI);
         UIManager.Instance.UpdateScoreText(0);
+        UIManager.Instance.UpdateLevelText(LevelManager.Instance.currentLevel);
+        Time.timeScale = 1;
+    }
+
+    public void Next()
+    {
+        ResetPlayerPosition();
+
+        this.player.enabled = true;
+        LevelManager.Instance.IncreaseLevel();
+        LevelManager.Instance.SpawnEnemies();
+        UIManager.Instance.Show(UIManager.Instance.IngameGUI);
+        UIManager.Instance.UpdateLevelText(LevelManager.Instance.currentLevel);
         Time.timeScale = 1;
     }
 
     public void Restart()
     {
+        ResetPlayerPosition();
+
         this.currentScore = 0;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         LevelManager.Instance.SpawnEnemies();
         UIManager.Instance.Show(UIManager.Instance.IngameGUI);
         UIManager.Instance.UpdateScoreText(0);
@@ -64,14 +83,14 @@ public class GameManager : MonoBehaviour
 
     public void Pause()
     {
-        this.cmp_playerBehaviour.enabled = false;
+        this.player.enabled = false;
         UIManager.Instance.Show(UIManager.Instance.PauseGUI);
         Time.timeScale = 0;
     }
 
     public void Resume()
     {
-        this.cmp_playerBehaviour.enabled = true;
+        this.player.enabled = true;
         UIManager.Instance.Show(UIManager.Instance.IngameGUI);
         Time.timeScale = 1;
     }
@@ -83,21 +102,40 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        this.cmp_playerBehaviour.enabled = false;
+        this.player.enabled = false;
         UIManager.Instance.Show(UIManager.Instance.GameOverGUI);
         Time.timeScale = 0;
     }
 
     public void Win()
     {
-        this.cmp_playerBehaviour.enabled = false;
-        UIManager.Instance.Show(UIManager.Instance.GameWonGUI);
-        Time.timeScale = 0;
+        this.player.enabled = false;
+        if (LevelManager.Instance.HasNextLevel)
+        {
+            this.Next();
+        }
+        else
+        {
+            UIManager.Instance.Show(UIManager.Instance.GameWonGUI);
+            Time.timeScale = 0;
+        }
     }
 
     public void IncreaseScore(int value)
     {
         this.currentScore += value;
         UIManager.Instance.UpdateScoreText(this.currentScore);
+    }
+
+    private void SavePlayerSpawnPoint()
+    {
+        this.playerStartPos = this.player.transform.position;
+        this.playerStartRot = this.player.transform.rotation;
+    }
+
+    private void ResetPlayerPosition()
+    {
+        this.player.transform.position = this.playerStartPos;
+        this.player.transform.rotation = this.playerStartRot;
     }
 }
