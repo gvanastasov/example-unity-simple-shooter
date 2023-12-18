@@ -85,7 +85,10 @@ public class GunBehaviour : MonoBehaviour
                     var target = hit.transform.GetComponent<IDamageable>();
                     if (target != null)
                     {
-                        target.Damage(this.AttackDamage);
+                        target.Damage(
+                            damage: this.AttackDamage,
+                            damageOrigin: this.transform.position
+                        );
                     }
                 }
 

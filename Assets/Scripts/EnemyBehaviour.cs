@@ -215,13 +215,32 @@ public class EnemyBehaviour : MonoBehaviour, IDamageable
         this.transform.LookAt(new Vector3(target.x, this.transform.position.y, target.z));
     }
 
-    public void Damage(int damage)
+    public void Damage(int damage, Vector3? damageOrigin)
     {
         this.Health -= damage;
-
         if (this.Health <= 0)
         {
             this.Die();
+        }
+
+        if (damageOrigin != null)
+        {
+            switch (CurrentState)
+            {
+                case EnemyState.Idle:
+                case EnemyState.Wander:
+                case EnemyState.Return:
+                {
+                    if (!IsFacing(damageOrigin.Value))
+                    {
+                        RotateTowards(damageOrigin.Value);
+                    }
+
+                    this.CurrentState = EnemyState.Move;
+                    this.movePosition = damageOrigin.Value;
+                    break;
+                }
+            }
         }
     }
 
