@@ -57,6 +57,11 @@ public class PlayerBehaviour : MonoBehaviour, IDamageable
         this.gun = GetComponentInChildren<GunBehaviour>();
         this.camera = GetComponentInChildren<Camera>()?.transform;
         this.maxHealth = this.health;
+
+        UIManager.Instance.UpdateHealthText(
+            currentHealth: this.health,
+            maxHealth: this.maxHealth
+        );
     }
 
     void Update()

@@ -34,7 +34,8 @@ public class UIManager : MonoBehaviour
             Instance = this;
         }
 
-        this.GUIs = new List<GameObject> { MainMenuGUI, PauseGUI, IngameGUI };
+        // todo: use reflection or some other smart way to cache properties from this
+        this.GUIs = new List<GameObject> { MainMenuGUI, PauseGUI, IngameGUI, GameOverGUI };
     }
 
     public void UpdateMagazineUI(int currentSize, int maxSize)

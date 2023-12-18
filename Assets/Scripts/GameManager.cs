@@ -17,15 +17,14 @@ public class GameManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(this);
+            Destroy(this.gameObject);
         }
         else
         {
             Instance = this;
+            this.cmp_playerBehaviour = FindFirstObjectByType<PlayerBehaviour>();
+            this.Main();
         }
-
-        this.cmp_playerBehaviour = FindFirstObjectByType<PlayerBehaviour>();
-        this.Main();
     }
 
     public void Main()
@@ -44,6 +43,14 @@ public class GameManager : MonoBehaviour
     {
         this.cmp_playerBehaviour.enabled = true;
         this.ingame = true;
+        LevelManager.Instance.SpawnEnemies();
+        UIManager.Instance.Show(UIManager.Instance.IngameGUI);
+        Time.timeScale = 1;
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         LevelManager.Instance.SpawnEnemies();
         UIManager.Instance.Show(UIManager.Instance.IngameGUI);
         Time.timeScale = 1;
@@ -70,6 +77,7 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        this.cmp_playerBehaviour.enabled = false;
         UIManager.Instance.Show(UIManager.Instance.GameOverGUI);
         Time.timeScale = 0;
     }
