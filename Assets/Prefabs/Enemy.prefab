@@ -4990,6 +4990,11 @@ MonoBehaviour:
   GunPoint: {fileID: 3556655318961895055}
   MagazineSize: 9
   AutoReload: 1
+  Damage: 10
+  DamageMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  AttackRange: 20
 --- !u!82 &5829416197549950099
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5100,9 +5105,9 @@ GameObject:
   - component: {fileID: 22632858625245142}
   - component: {fileID: 8289172441421295449}
   - component: {fileID: 7444292291163805205}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5190,7 +5195,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
   m_Height: 2
@@ -5212,6 +5217,7 @@ MonoBehaviour:
   AttackDistance: 10
   AttackInterval: 2
   SpeedForward: 3
+  health: 100
 --- !u!114 &7444292291163805205
 MonoBehaviour:
   m_ObjectHideFlags: 0

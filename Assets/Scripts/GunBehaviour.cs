@@ -1,4 +1,5 @@
 using System;
+using UnityEditor;
 using UnityEngine;
 
 public class GunBehaviour : MonoBehaviour
@@ -7,6 +8,9 @@ public class GunBehaviour : MonoBehaviour
     public Transform GunPoint = null;
     public int MagazineSize = 9;
     public bool AutoReload = true;
+    public int AttackDamage = 10;
+    public LayerMask AttackDamageMask = -1;
+    public int AttackRange = 20;
     
     private AudioSource cmp_audioSource;
     private ParticleSystem cmp_burstParticles;
@@ -74,6 +78,16 @@ public class GunBehaviour : MonoBehaviour
                 this.cmp_burstParticles.Play();
 
                 GameObject.Instantiate(Bullet, GunPoint);
+                
+                var forward = transform.TransformDirection(Vector3.forward);
+                if (Physics.Raycast(transform.position, forward, out RaycastHit hit, this.AttackRange, AttackDamageMask))
+                {
+                    var target = hit.transform.GetComponent<IDamageable>();
+                    if (target != null)
+                    {
+                        target.Damage(this.AttackDamage);
+                    }
+                }
 
                 if (isPlayer)
                 {
@@ -89,6 +103,8 @@ public class GunBehaviour : MonoBehaviour
             }
         }
     }
+
+
 
     public void PlaySound()
     {

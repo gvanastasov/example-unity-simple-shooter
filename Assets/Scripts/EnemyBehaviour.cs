@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
-public class EnemyBehaviour : MonoBehaviour
+public class EnemyBehaviour : MonoBehaviour, IDamageable
 {
     public enum EnemyState
     {
@@ -19,6 +16,19 @@ public class EnemyBehaviour : MonoBehaviour
     public int AttackDistance = 5;
     public float AttackInterval = 2;
     public float SpeedForward = 3f;
+    [SerializeField]
+    private int health = 100;
+    public int Health
+    {
+        get
+        {
+            return this.health;
+        }
+        set
+        {
+            this.health = value;
+        }
+    }
 
     private SightSensor cmp_sightSensor;
     private Vector3 returnPosition;
@@ -203,5 +213,20 @@ public class EnemyBehaviour : MonoBehaviour
     void RotateTowards(Vector3 target)
     {
         this.transform.LookAt(new Vector3(target.x, this.transform.position.y, target.z));
+    }
+
+    public void Damage(int damage)
+    {
+        this.Health -= damage;
+
+        if (this.Health <= 0)
+        {
+            this.Die();
+        }
+    }
+
+    public void Die()
+    {
+        Destroy(this.gameObject);
     }
 }
