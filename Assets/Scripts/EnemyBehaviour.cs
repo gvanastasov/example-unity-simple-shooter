@@ -246,6 +246,7 @@ public class EnemyBehaviour : MonoBehaviour, IDamageable
 
     public void Die()
     {
+        LevelManager.Instance.EnemyDestroyed();
         Destroy(this.gameObject);
     }
 }

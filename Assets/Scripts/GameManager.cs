@@ -81,4 +81,11 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.Show(UIManager.Instance.GameOverGUI);
         Time.timeScale = 0;
     }
+
+    public void Win()
+    {
+        this.cmp_playerBehaviour.enabled = false;
+        UIManager.Instance.Show(UIManager.Instance.GameWonGUI);
+        Time.timeScale = 0;
+    }
 }

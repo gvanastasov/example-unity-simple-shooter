@@ -21,6 +21,8 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+    private int currentEnemyCount;
+
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -40,6 +42,21 @@ public class LevelManager : MonoBehaviour
         this.currentLevel += 1;
     }
 
+    public void EnemyDestroyed()
+    {
+        this.currentEnemyCount = Mathf.Max(0, this.currentEnemyCount - 1);
+
+        UIManager.Instance.UpdateEnemiesBar(
+            currentEnemies: this.currentEnemyCount,
+            totalEnemies: this.EnemyCount
+        );
+
+        if (this.currentEnemyCount == 0)
+        {
+            GameManager.Instance.Win();
+        }
+    }
+
     public void SpawnEnemies()
     {
         if (this.Enemy == null)
@@ -53,6 +70,13 @@ public class LevelManager : MonoBehaviour
             var pos = GetSpawnPos(SpawnMeshFilter.mesh);
             GameObject.Instantiate(Enemy, new Vector3(pos.x, pos.y + renderer.bounds.extents.y, pos.z), Quaternion.identity);
         }
+        
+        this.currentEnemyCount = EnemyCount;
+
+        UIManager.Instance.UpdateEnemiesBar(
+            currentEnemies: this.currentEnemyCount,
+            totalEnemies: this.EnemyCount 
+        );
     }
 
     public Vector3 GetSpawnPos(Mesh mesh)

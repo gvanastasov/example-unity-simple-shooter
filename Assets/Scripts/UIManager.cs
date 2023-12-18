@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
     public GameObject PauseGUI;
     public GameObject IngameGUI;
     public GameObject GameOverGUI;
+    public GameObject GameWonGUI;
 
     public static UIManager Instance 
     {
@@ -20,6 +21,8 @@ public class UIManager : MonoBehaviour
     public TMP_Text ammunitionElement;
     public TMP_Text HealthTextElement;
     public Image HealthImageElement;
+    public TMP_Text EnemiesTextElement;
+    public Image EnemiesImageElement;
 
     private List<GameObject> GUIs;
 
@@ -35,7 +38,7 @@ public class UIManager : MonoBehaviour
         }
 
         // todo: use reflection or some other smart way to cache properties from this
-        this.GUIs = new List<GameObject> { MainMenuGUI, PauseGUI, IngameGUI, GameOverGUI };
+        this.GUIs = new List<GameObject> { MainMenuGUI, PauseGUI, IngameGUI, GameOverGUI,GameWonGUI };
     }
 
     public void UpdateMagazineUI(int currentSize, int maxSize)
@@ -54,7 +57,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void UpdateHealthText(int currentHealth, int maxHealth)
+    public void UpdateHealthBar(int currentHealth, int maxHealth)
     {
         if (this.HealthTextElement != null)
         {
@@ -64,6 +67,19 @@ public class UIManager : MonoBehaviour
         if (this.HealthImageElement != null)
         {
             this.HealthImageElement.fillAmount = (float)currentHealth / maxHealth;
+        }
+    }
+
+    public void UpdateEnemiesBar(int currentEnemies, int totalEnemies)
+    {
+        if (this.EnemiesTextElement != null)
+        {
+            this.EnemiesTextElement.text = $"{currentEnemies}/{totalEnemies}";
+        }
+
+        if (this.EnemiesImageElement != null)
+        {
+            this.EnemiesImageElement.fillAmount = (float)currentEnemies/totalEnemies;
         }
     }
 

@@ -1741,7 +1741,7 @@ MonoBehaviour:
   SpeedForward: 10
   SpeedBackward: 5
   SpeedSide: 8
-  health: 10
+  health: 100
   sensitivity: 2
   yRotationLimit: 88
 --- !u!114 &570177786
