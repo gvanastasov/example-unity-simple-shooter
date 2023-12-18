@@ -55,9 +55,9 @@ public class LevelManager : MonoBehaviour
     {
         this.currentEnemyCount = Mathf.Max(0, this.currentEnemyCount - 1);
 
-        UIManager.Instance.UpdateEnemiesBar(
-            currentEnemies: this.currentEnemyCount,
-            totalEnemies: this.EnemyCount
+        UIManager.Instance.Enemies_UpdateBar(
+            current: this.currentEnemyCount,
+            total: this.EnemyCount
         );
 
         GameManager.Instance.IncreaseScore(this.currentLevel);
@@ -83,9 +83,9 @@ public class LevelManager : MonoBehaviour
         
         this.currentEnemyCount = EnemyCount;
 
-        UIManager.Instance.UpdateEnemiesBar(
-            currentEnemies: this.currentEnemyCount,
-            totalEnemies: this.EnemyCount 
+        UIManager.Instance.Enemies_UpdateBar(
+            current: this.currentEnemyCount,
+            total: this.EnemyCount 
         );
     }
 

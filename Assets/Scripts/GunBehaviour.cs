@@ -60,7 +60,7 @@ public class GunBehaviour : MonoBehaviour
 
         if (isPlayer)
         {
-            UIManager.Instance.UpdateMagazineUI(this.currentMagazineSize, this.MagazineSize);
+            UIManager.Instance.Magazine_UpdateText(this.currentMagazineSize, this.MagazineSize);
         }
     }
 
@@ -94,7 +94,7 @@ public class GunBehaviour : MonoBehaviour
 
                 if (isPlayer)
                 {
-                    UIManager.Instance.UpdateMagazineUI(this.currentMagazineSize, this.MagazineSize);
+                    UIManager.Instance.Magazine_UpdateText(this.currentMagazineSize, this.MagazineSize);
                 }
             }
             else

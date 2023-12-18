@@ -22,14 +22,14 @@ public class PlayerInventory : MonoBehaviour
             Instance = this;
         }
 
-        UIManager.Instance.UpdateAmmunitionUI(this.Bullets);
+        UIManager.Instance.Ammunition_UpdateText(this.Bullets);
     }
 
     public int GetBullets(int count)
     {
         var result = count > Bullets ? Bullets : count;
         this.Bullets -= result;
-        UIManager.Instance.UpdateAmmunitionUI(this.Bullets);
+        UIManager.Instance.Ammunition_UpdateText(this.Bullets);
         return result;
     }
 }

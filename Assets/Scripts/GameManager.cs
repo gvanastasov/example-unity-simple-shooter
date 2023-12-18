@@ -53,8 +53,8 @@ public class GameManager : MonoBehaviour
         this.currentScore = 0;
         LevelManager.Instance.SpawnEnemies();
         UIManager.Instance.Show(UIManager.Instance.IngameGUI);
-        UIManager.Instance.UpdateScoreText(0);
-        UIManager.Instance.UpdateLevelText(LevelManager.Instance.currentLevel);
+        UIManager.Instance.Score_UpdateText(0);
+        UIManager.Instance.Level_UpdateText(LevelManager.Instance.currentLevel);
         Time.timeScale = 1;
     }
 
@@ -66,7 +66,7 @@ public class GameManager : MonoBehaviour
         LevelManager.Instance.IncreaseLevel();
         LevelManager.Instance.SpawnEnemies();
         UIManager.Instance.Show(UIManager.Instance.IngameGUI);
-        UIManager.Instance.UpdateLevelText(LevelManager.Instance.currentLevel);
+        UIManager.Instance.Level_UpdateText(LevelManager.Instance.currentLevel);
         Time.timeScale = 1;
     }
 
@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviour
         this.currentScore = 0;
         LevelManager.Instance.SpawnEnemies();
         UIManager.Instance.Show(UIManager.Instance.IngameGUI);
-        UIManager.Instance.UpdateScoreText(0);
+        UIManager.Instance.Score_UpdateText(0);
         Time.timeScale = 1;
     }
 
@@ -124,7 +124,7 @@ public class GameManager : MonoBehaviour
     public void IncreaseScore(int value)
     {
         this.currentScore += value;
-        UIManager.Instance.UpdateScoreText(this.currentScore);
+        UIManager.Instance.Score_UpdateText(this.currentScore);
     }
 
     private void SavePlayerSpawnPoint()

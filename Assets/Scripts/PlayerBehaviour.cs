@@ -58,9 +58,9 @@ public class PlayerBehaviour : MonoBehaviour, IDamageable
         this.camera = GetComponentInChildren<Camera>()?.transform;
         this.maxHealth = this.health;
 
-        UIManager.Instance.UpdateHealthBar(
-            currentHealth: this.health,
-            maxHealth: this.maxHealth
+        UIManager.Instance.Health_UpdateBar(
+            current: this.health,
+            total: this.maxHealth
         );
     }
 
@@ -143,9 +143,9 @@ public class PlayerBehaviour : MonoBehaviour, IDamageable
     public void Damage(int damage, Vector3? damageOrigin = null)
     {
         this.Health = Math.Max(0, this.Health - damage);
-        UIManager.Instance.UpdateHealthBar(
-            currentHealth: this.health,
-            maxHealth: this.maxHealth
+        UIManager.Instance.Health_UpdateBar(
+            current: this.health,
+            total: this.maxHealth
         );
         if (this.Health == 0)
         {
