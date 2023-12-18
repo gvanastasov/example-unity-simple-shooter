@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class PlayerBehaviour : MonoBehaviour
+public class PlayerBehaviour : MonoBehaviour, IDamageable
 {
     const string xAxis = "Mouse X";
 	const string yAxis = "Mouse Y";
@@ -21,7 +21,22 @@ public class PlayerBehaviour : MonoBehaviour
             sensitivity = value; 
         }
 	}
-	
+
+    [SerializeField]
+    private int health = 100;
+    private int maxHealth;
+    public int Health
+    {
+        get
+        {
+            return this.health;
+        }
+        set
+        {
+            this.health = value;
+        }
+    }
+
     [Range(0.1f, 9f)]
     [SerializeField] 
     private float sensitivity = 2f;
@@ -41,6 +56,7 @@ public class PlayerBehaviour : MonoBehaviour
     {
         this.gun = GetComponentInChildren<GunBehaviour>();
         this.camera = GetComponentInChildren<Camera>()?.transform;
+        this.maxHealth = this.health;
     }
 
     void Update()
@@ -117,5 +133,23 @@ public class PlayerBehaviour : MonoBehaviour
             this.transform.Translate(
                 new Vector3(this.camera.right.x, 0, this.camera.right.z) * SpeedSide * Time.deltaTime, Space.World);
         }
+    }
+
+    public void Damage(int damage, Vector3? damageOrigin = null)
+    {
+        this.Health = Math.Max(0, this.Health - damage);
+        UIManager.Instance.UpdateHealthText(
+            currentHealth: this.health,
+            maxHealth: this.maxHealth
+        );
+        if (this.Health == 0)
+        {
+            this.Die();
+        }
+    }
+
+    public void Die()
+    {
+        GameManager.Instance.GameOver();
     }
 }

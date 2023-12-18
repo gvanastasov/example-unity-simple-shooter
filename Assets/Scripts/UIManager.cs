@@ -1,12 +1,14 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
     public GameObject MainMenuGUI;
     public GameObject PauseGUI;
     public GameObject IngameGUI;
+    public GameObject GameOverGUI;
 
     public static UIManager Instance 
     {
@@ -16,6 +18,8 @@ public class UIManager : MonoBehaviour
 
     public TMP_Text magazineElement;
     public TMP_Text ammunitionElement;
+    public TMP_Text HealthTextElement;
+    public Image HealthImageElement;
 
     private List<GameObject> GUIs;
 
@@ -46,6 +50,19 @@ public class UIManager : MonoBehaviour
         if (this.ammunitionElement != null)
         {
             ammunitionElement.text = $"Ammu: {count}";
+        }
+    }
+
+    public void UpdateHealthText(int currentHealth, int maxHealth)
+    {
+        if (this.HealthTextElement != null)
+        {
+            HealthTextElement.text = $"{currentHealth}/{maxHealth}";
+        }
+
+        if (this.HealthImageElement != null)
+        {
+            this.HealthImageElement.fillAmount = (float)currentHealth / maxHealth;
         }
     }
 

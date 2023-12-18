@@ -67,4 +67,10 @@ public class GameManager : MonoBehaviour
     {
         Application.Quit();
     }
+
+    public void GameOver()
+    {
+        UIManager.Instance.Show(UIManager.Instance.GameOverGUI);
+        Time.timeScale = 0;
+    }
 }
