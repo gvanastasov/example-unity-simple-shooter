@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
 
     private bool ingame = false;
 
+    private int currentScore = 0;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -43,16 +45,20 @@ public class GameManager : MonoBehaviour
     {
         this.cmp_playerBehaviour.enabled = true;
         this.ingame = true;
+        this.currentScore = 0;
         LevelManager.Instance.SpawnEnemies();
         UIManager.Instance.Show(UIManager.Instance.IngameGUI);
+        UIManager.Instance.UpdateScoreText(0);
         Time.timeScale = 1;
     }
 
     public void Restart()
     {
+        this.currentScore = 0;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         LevelManager.Instance.SpawnEnemies();
         UIManager.Instance.Show(UIManager.Instance.IngameGUI);
+        UIManager.Instance.UpdateScoreText(0);
         Time.timeScale = 1;
     }
 
@@ -87,5 +93,11 @@ public class GameManager : MonoBehaviour
         this.cmp_playerBehaviour.enabled = false;
         UIManager.Instance.Show(UIManager.Instance.GameWonGUI);
         Time.timeScale = 0;
+    }
+
+    public void IncreaseScore(int value)
+    {
+        this.currentScore += value;
+        UIManager.Instance.UpdateScoreText(this.currentScore);
     }
 }

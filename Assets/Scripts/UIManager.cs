@@ -23,6 +23,7 @@ public class UIManager : MonoBehaviour
     public Image HealthImageElement;
     public TMP_Text EnemiesTextElement;
     public Image EnemiesImageElement;
+    public TMP_Text ScoreTextElement;
 
     private List<GameObject> GUIs;
 
@@ -80,6 +81,14 @@ public class UIManager : MonoBehaviour
         if (this.EnemiesImageElement != null)
         {
             this.EnemiesImageElement.fillAmount = (float)currentEnemies/totalEnemies;
+        }
+    }
+
+    public void UpdateScoreText(int value)
+    {
+        if (this.ScoreTextElement != null)
+        {
+            this.ScoreTextElement.text = $"Score: {value}";
         }
     }
 

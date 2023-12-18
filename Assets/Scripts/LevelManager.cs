@@ -11,7 +11,8 @@ public class LevelManager : MonoBehaviour
         private set;
     }
 
-    private int currentLevel = 1;
+    public int currentLevel = 1;
+    public int maxLevel = 5;
 
     public int EnemyCount
     {
@@ -51,6 +52,7 @@ public class LevelManager : MonoBehaviour
             totalEnemies: this.EnemyCount
         );
 
+        GameManager.Instance.IncreaseScore(this.currentLevel);
         if (this.currentEnemyCount == 0)
         {
             GameManager.Instance.Win();
