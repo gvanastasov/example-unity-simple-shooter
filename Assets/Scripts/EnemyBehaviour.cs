@@ -1,7 +1,13 @@
 using UnityEngine;
 
+/// <summary>
+/// Represents the behavior of an enemy in the game.
+/// </summary>
 public class EnemyBehaviour : MonoBehaviour, IDamageable
 {
+    /// <summary>
+    /// Possible states of the enemy.
+    /// </summary>
     public enum EnemyState
     {
         Idle,
@@ -11,13 +17,36 @@ public class EnemyBehaviour : MonoBehaviour, IDamageable
         Chase,
         Return
     }
-
+    
+    /// <summary>
+    /// Current state of the enemy.
+    /// </summary>
     public EnemyState CurrentState;
+    
+    /// <summary>
+    /// Distance from the player at which the enemy will attack.
+    /// </summary>
     public int AttackDistance = 5;
+    
+    /// <summary>
+    /// Interval between enemy attacks.
+    /// </summary>
     public float AttackInterval = 2;
+    
+    /// <summary>
+    /// Speed at which the enemy moves forward.
+    /// </summary>
     public float SpeedForward = 3f;
+    
+    /// <summary>
+    /// Health of the enemy.
+    /// </summary>
     [SerializeField]
     private int health = 100;
+    
+    /// <summary>
+    /// Gets or sets the health of the enemy.
+    /// </summary>
     public int Health
     {
         get
@@ -30,12 +59,39 @@ public class EnemyBehaviour : MonoBehaviour, IDamageable
         }
     }
 
+    /// <summary>
+    /// Sight sensor of the enemy.
+    /// </summary>
     private SightSensor cmp_sightSensor;
+    
+    /// <summary>
+    /// Position to return to when the enemy loses sight of the player.
+    /// </summary>
     private Vector3 returnPosition;
+    
+    /// <summary>
+    /// Rotation to return to when the enemy loses sight of the player.
+    /// </summary>
     private Quaternion returnRotation;
+
+    /// <summary>
+    /// Current position to move to.
+    /// </summary>
     private Vector3 movePosition;
+    
+    /// <summary>
+    /// Current time since last attack.
+    /// </summary>
     private float currentAttackTime;
+
+    /// <summary>
+    /// Whether the enemy can attack.
+    /// </summary>
     private bool canAttack = true;
+    
+    /// <summary>
+    /// Gun of the enemy.
+    /// </summary>
     private GunBehaviour gun = null;
 
     void Awake()
@@ -81,6 +137,9 @@ public class EnemyBehaviour : MonoBehaviour, IDamageable
         }
     }
 
+    /// <summary>
+    /// Updates the enemy's idle state.
+    /// </summary>
     void IdleStateUpdate()
     {
         if (this.cmp_sightSensor.detectedObject != null)

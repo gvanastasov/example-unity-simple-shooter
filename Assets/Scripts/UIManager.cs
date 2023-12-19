@@ -10,30 +10,91 @@ using UnityEngine.UI;
 /// </summary>
 public class UIManager : MonoBehaviour
 {
+#region Props
+    /// <summary>
+    /// Ref to Main Menu GUI.
+    /// </summary>
     [Header("GUI Refs")]
+    [Tooltip("Ref to Main Menu GUI.")]
     public GameObject MainMenuGUI;
+
+    /// <summary>
+    /// Ref to Pause GUI.
+    /// </summary>
+    [Tooltip("Ref to Pause GUI.")]
     public GameObject PauseGUI;
+
+    /// <summary>
+    /// Ref to Ingame GUI.
+    /// </summary>
+    [Tooltip("Ref to Ingame GUI.")]
     public GameObject IngameGUI;
+
+    /// <summary>
+    /// Ref to Game Over GUI.
+    /// </summary>
+    [Tooltip("Ref to Game Over GUI.")]
     public GameObject GameOverGUI;
+
+    /// <summary>
+    /// Ref to Game Won GUI.
+    /// </summary>
+    [Tooltip("Ref to Game Won GUI.")]
     public GameObject GameWonGUI;
 
+    /// <summary>
+    /// Reference to gun magazine GUI element.
+    /// </summary>
     [Header("Ammunition")]
+    [Tooltip("Ref to gun magazine text element.")]
     public TMP_Text MagazineElement;
+
+    /// <summary>
+    /// Ref to ammunition text element.
+    /// </summary>
+    [Tooltip("Ref to ammunition text element.")]
     public TMP_Text AmmunitionElement;
     
+    /// <summary>
+    /// Ref to health text element.
+    /// </summary>
     [Header("Health Bar")]
+    [Tooltip("Ref to health text element.")]
     public TMP_Text HealthTextElement;
+
+    /// <summary>
+    /// Ref to health image element.
+    /// </summary>
+    [Tooltip("Ref to health image element.")]
     public Image HealthImageElement;
 
+    /// <summary>
+    /// Ref to enemies text element.
+    /// </summary>
     [Header("Enemies Bar")]
+    [Tooltip("Ref to enemies text element.")]
     public TMP_Text EnemiesTextElement;
+
+    /// <summary>
+    /// Ref to enemies image element.
+    /// </summary>
+    [Tooltip("Ref to enemies image element.")]
     public Image EnemiesImageElement;
     
+    /// <summary>
+    /// Ref to score text element.
+    /// </summary>
     [Header("Score")]
+    [Tooltip("Ref to score text element.")]
     public TMP_Text ScoreTextElement;
     
+    /// <summary>
+    /// Ref to level text element.
+    /// </summary>
     [Header("Level")]
+    [Tooltip("Ref to level text element.")]
     public TMP_Text LevelTextElement;
+#endregion
 
     /// <summary>
     /// Cache for GUI screens, from which we can easily toggle one active from, and the
@@ -41,6 +102,9 @@ public class UIManager : MonoBehaviour
     /// </summary>
     private List<GameObject> screens;
 
+    /// <summary>
+    /// Static reference to singleton instance of this class.
+    /// </summary>
     public static UIManager Instance 
     {
         get;
@@ -51,7 +115,7 @@ public class UIManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            #if (UNITY_EDITOR || DEVELOPMENT_BUILD)
+            #if UNITY_EDITOR || DEVELOPMENT_BUILD
             {
                 // TODO: add common logging mechanism
                 Debug.Log("UIManager: mutliple instances of UIManager found, destroying this.");
@@ -61,7 +125,7 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            #if (UNITY_EDITOR || DEVELOPMENT_BUILD)
+            #if UNITY_EDITOR || DEVELOPMENT_BUILD
             {
                 // TODO: add common logging mechanism
                 Debug.Log("UIManager: init as singleton.");
@@ -84,7 +148,7 @@ public class UIManager : MonoBehaviour
         this.screens.ForEach(x => {
             if (x != null)
             {
-                #if (UNITY_EDITOR || DEVELOPMENT_BUILD)
+                #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 {
                     if (x.GetInstanceID() == targetInstanceId)
                     {
@@ -108,7 +172,7 @@ public class UIManager : MonoBehaviour
     {
         if (this.MagazineElement != null)
         {
-            #if (UNITY_EDITOR || DEVELOPMENT_BUILD)
+            #if UNITY_EDITOR || DEVELOPMENT_BUILD
             {
                 // TODO: add common logging mechanism
                 Debug.Log($"UIManager: magazine text updated.");
@@ -126,7 +190,7 @@ public class UIManager : MonoBehaviour
     {
         if (this.AmmunitionElement != null)
         {
-            #if (UNITY_EDITOR || DEVELOPMENT_BUILD)
+            #if UNITY_EDITOR || DEVELOPMENT_BUILD
             {
                 // TODO: add common logging mechanism
                 Debug.Log($"UIManager: ammunition text updated.");
@@ -148,7 +212,7 @@ public class UIManager : MonoBehaviour
     {
         if (this.HealthTextElement != null)
         {
-            #if (UNITY_EDITOR || DEVELOPMENT_BUILD)
+            #if UNITY_EDITOR || DEVELOPMENT_BUILD
             {
                 // TODO: add common logging mechanism
                 Debug.Log($"UIManager: health text updated.");
@@ -158,7 +222,7 @@ public class UIManager : MonoBehaviour
         }
         if (this.HealthImageElement != null)
         {
-            #if (UNITY_EDITOR || DEVELOPMENT_BUILD)
+            #if UNITY_EDITOR || DEVELOPMENT_BUILD
             {
                 // TODO: add common logging mechanism
                 Debug.Log($"UIManager: health image fill updated - value set to {(float)current/total}.");
@@ -180,7 +244,7 @@ public class UIManager : MonoBehaviour
     {
         if (this.EnemiesTextElement != null)
         {
-            #if (UNITY_EDITOR || DEVELOPMENT_BUILD)
+            #if UNITY_EDITOR || DEVELOPMENT_BUILD
             {
                 // TODO: add common logging mechanism
                 Debug.Log($"UIManager: enemies text updated.");
@@ -191,7 +255,7 @@ public class UIManager : MonoBehaviour
 
         if (this.EnemiesImageElement != null)
         {
-            #if (UNITY_EDITOR || DEVELOPMENT_BUILD)
+            #if UNITY_EDITOR || DEVELOPMENT_BUILD
             {
                 // TODO: add common logging mechanism
                 Debug.Log($"UIManager: enemies image fill updated - value set to {(float)current/total}.");
@@ -211,7 +275,7 @@ public class UIManager : MonoBehaviour
     {
         if (this.ScoreTextElement != null)
         {
-            #if (UNITY_EDITOR || DEVELOPMENT_BUILD)
+            #if UNITY_EDITOR || DEVELOPMENT_BUILD
             {
                 // TODO: add common logging mechanism
                 Debug.Log($"UIManager: score text updated - value set to {value}.");
@@ -231,7 +295,7 @@ public class UIManager : MonoBehaviour
     {
         if (this.LevelTextElement != null)
         {
-            #if (UNITY_EDITOR || DEVELOPMENT_BUILD)
+            #if UNITY_EDITOR || DEVELOPMENT_BUILD
             {
                 // TODO: add common logging mechanism
                 Debug.Log($"UIManager: level text updated - value set to {value}.");
