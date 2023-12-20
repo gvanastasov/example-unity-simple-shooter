@@ -14,7 +14,7 @@ This repository contains a simple shooting game built with Unity. The game inclu
 
 ## Scene Description
 
-- Uses Unity's Universal Render Pipeline (URP) for high-quality graphics and performance.
+- Uses Unity's Universal Render Pipeline (URP) for high-quality graphics and performance (don't expect AAA graphics, rather cubes and spheres :D, just catching up with render pipelines)
 - Terrain is generated via Unity Terrain Engine, providing a realistic and immersive environment.
 - Uses built-in meshes (cubes, etc.) for simple and efficient asset creation.
 - Main base is created with Pro Builder Shape, allowing for quick and easy level design.
