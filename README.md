@@ -37,10 +37,6 @@ This repository contains a simple shooting game built with Unity. The game inclu
 
 To get started with this project, clone the repository and open it in Unity.
 
-## Contributing
-
-Contributions are welcome! Please read the contributing guide to get started.
-
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
