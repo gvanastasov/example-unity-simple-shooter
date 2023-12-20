@@ -11,18 +11,18 @@ public class SightSensorEditor : Editor
         var ss = (SightSensor)target;
 
         Handles.color = Color.white;
-        Handles.DrawWireArc(ss.transform.position, Vector3.up, Vector3.forward, 360, ss.distance);
+        Handles.DrawWireArc(ss.transform.position, Vector3.up, Vector3.forward, 360, ss.Distance);
 
-        Vector3 viewAngleA = GetSightPoint(ss.transform, ss.distance, -ss.angle / 2);
-		Vector3 viewAngleB = GetSightPoint(ss.transform, ss.distance, ss.angle / 2);
+        Vector3 viewAngleA = GetSightPoint(ss.transform, ss.Distance, -ss.Angle / 2);
+		Vector3 viewAngleB = GetSightPoint(ss.transform, ss.Distance, ss.Angle / 2);
 
         Handles.DrawLine(ss.transform.position, ss.transform.position + viewAngleA);
         Handles.DrawLine(ss.transform.position, ss.transform.position + viewAngleB);
 
 		Handles.color = Color.red;
-        if (ss.detectedObject != null)
+        if (ss.DetectedObject != null)
         {
-			Handles.DrawLine(ss.transform.position, ss.detectedObject.transform.position);
+			Handles.DrawLine(ss.transform.position, ss.DetectedObject.transform.position);
 		}
     }
 

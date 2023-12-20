@@ -1,30 +1,71 @@
 using System;
 using UnityEngine;
 
+/// <summary>
+/// PlayerBehaviour is the main script for the player. It handles movement, rotation, and shooting.
+/// </summary>
+/// <remarks>
+/// Player is controlled using the mouse and keyboard.
+/// Player can be damanged.
+/// Player can die.
+/// </remarks>
 public class PlayerBehaviour : MonoBehaviour, IDamageable
 {
+#region Constants
     const string xAxis = "Mouse X";
 	const string yAxis = "Mouse Y";
+#endregion
 
+#region Serializable Fields
+    /// <summary>
+    /// The speed at which the player moves forward.
+    /// </summary>
+    [Tooltip("The speed at which the player moves forward.")]
     public float SpeedForward = 10f;
+
+    /// <summary>
+    /// The speed at which the player moves backward.
+    /// </summary>
+    [Tooltip("The speed at which the player moves backward.")]
     public float SpeedBackward = 5f;
+
+    /// <summary>
+    /// The speed at which the player moves sideways.
+    /// </summary>
+    [Tooltip("The speed at which the player moves sideways.")]
     public float SpeedSide = 8f;
 
-    public float Sensitivity 
-    {
-		get 
-        { 
-            return sensitivity; 
-        }
-		set 
-        { 
-            sensitivity = value; 
-        }
-	}
+    /// <summary>
+    /// The sensitivity of the mouse.
+    /// </summary>
+    [Range(0.1f, 9f)]
+    [SerializeField] 
+    [Tooltip("The sensitivity of the mouse.")]
+    private float sensitivity = 2f;
+	
+    /// <summary>
+    /// Limits vertical camera rotation. Prevents the flipping that happens when rotation goes above 90.
+    /// </summary>
+    [Tooltip("Limits vertical camera rotation. Prevents the flipping that happens when rotation goes above 90.")]
+	[Range(0f, 90f)]
+    [SerializeField] 
+    private float yRotationLimit = 88f;
 
+    /// <summary>
+    /// The player's health.
+    /// </summary>
+    /// <remarks>
+    /// Player dies when health reaches 0.
+    /// </remarks>
     [SerializeField]
+    [Tooltip("The player's health.")]
     private int health = 100;
-    private int maxHealth;
+#endregion
+
+#region Public Properties
+    /// <summary>
+    /// The player's health.
+    /// </summary>
     public int Health
     {
         get
@@ -37,21 +78,48 @@ public class PlayerBehaviour : MonoBehaviour, IDamageable
         }
     }
 
-    [Range(0.1f, 9f)]
-    [SerializeField] 
-    private float sensitivity = 2f;
-	
-    [Tooltip("Limits vertical camera rotation. Prevents the flipping that happens when rotation goes above 90.")]
-	[Range(0f, 90f)]
-    [SerializeField] 
-    private float yRotationLimit = 88f;
+    /// <summary>
+    /// The sensitivity of the mouse.
+    /// </summary>
+    public float Sensitivity 
+    {
+		get 
+        { 
+            return sensitivity; 
+        }
+		set 
+        { 
+            sensitivity = value; 
+        }
+	}
+#endregion
 
+#region Private Fields
+    /// <summary>
+    /// The player's maximum health - cached at the start of the game.
+    /// </summary>
+    private int maxHealth;
+    
+    /// <summary>
+    /// The player's rotation.
+    /// </summary>
     private Vector2 rotation = Vector2.zero;
 
+    /// <summary>
+    /// The player's gun.
+    /// </summary>
+    /// <remarks>
+    /// Player can only have one gun.
+    /// </remarks>
     private GunBehaviour gun = null;
 
+    /// <summary>
+    /// The player's camera.
+    /// </summary>
     private new Transform camera = null;
+#endregion
 
+#region Unity Callbacks
     void Awake()
     {
         this.gun = GetComponentInChildren<GunBehaviour>();
@@ -88,7 +156,12 @@ public class PlayerBehaviour : MonoBehaviour, IDamageable
             GameManager.Instance.Pause();
         }
     }
+#endregion
 
+#region Actions
+    /// <summary>
+    /// Reloads gun.
+    /// </summary>
     private void Reload()
     {
         if (gun != null)
@@ -97,6 +170,9 @@ public class PlayerBehaviour : MonoBehaviour, IDamageable
         }
     }
 
+    /// <summary>
+    /// Shoots gun.
+    /// </summary>
     private void Shoot()
     {
         if (gun != null)
@@ -105,6 +181,14 @@ public class PlayerBehaviour : MonoBehaviour, IDamageable
         }
     }
 
+    /// <summary>
+    /// Rotates the player.
+    /// </summary>
+    /// <remarks>
+    /// Rotation is based on mouse movement.
+    /// Rotation is applied to the camera as child object of the player.
+    /// Rotation is limited to prevent flipping.
+    /// </remarks>
     private void Rotate()
     {
         rotation.x += Input.GetAxis(xAxis) * sensitivity;
@@ -116,6 +200,13 @@ public class PlayerBehaviour : MonoBehaviour, IDamageable
         this.camera.transform.localRotation = xQuat * yQuat;
     }
 
+    /// <summary>
+    /// Moves the player.
+    /// </summary>
+    /// <remarks>
+    /// Movement is based on keyboard input.
+    /// Movement is limited to only X and Z axis.
+    /// </remarks>
     private void Move()
     {
         if (Input.GetKey(KeyCode.W))
@@ -140,6 +231,11 @@ public class PlayerBehaviour : MonoBehaviour, IDamageable
         }
     }
 
+    /// <summary>
+    /// Damages the player.
+    /// </summary>
+    /// <param name="damage"></param>
+    /// <param name="damageOrigin"></param>
     public void Damage(int damage, Vector3? damageOrigin = null)
     {
         this.Health = Math.Max(0, this.Health - damage);
@@ -153,8 +249,16 @@ public class PlayerBehaviour : MonoBehaviour, IDamageable
         }
     }
 
+    /// <summary>
+    /// Kills the player.
+    /// </summary>
+    /// <remarks>
+    /// Player dies when health reaches 0.
+    /// Player loses game when player dies.
+    /// </remarks>
     public void Die()
     {
         GameManager.Instance.GameOver();
     }
+#endregion
 }

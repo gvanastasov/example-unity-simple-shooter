@@ -1,19 +1,51 @@
 using UnityEngine;
 
+/// <summary>
+/// The LevelManager is responsible for managing the level state.
+/// </summary>
 public class LevelManager : MonoBehaviour
 {
-    public GameObject Enemy;
-    public MeshFilter SpawnMeshFilter;
-
+#region Static Properties
+    /// <summary>
+    /// The singleton instance of the LevelManager.
+    /// </summary>
     public static LevelManager Instance 
     {
         get;
         private set;
     }
+#endregion
 
+#region Serializable Fields
+    /// <summary>
+    /// Reference to the enemy prefab.
+    /// </summary>
+    [Tooltip("Reference to the enemy prefab.")]
+    public GameObject Enemy;
+
+    /// <summary>
+    /// Reference to a mesh used for spawing enemies at random positions.
+    /// </summary>
+    [Tooltip("Reference to a mesh used for spawing enemies at random positions.")]
+    public MeshFilter SpawnMeshFilter;
+
+    /// <summary>
+    /// The current level.
+    /// </summary>
+    [Tooltip("The current level.")]
     public int currentLevel = 1;
-    public int maxLevel = 5;
 
+    /// <summary>
+    /// The maximum level.
+    /// </summary>
+    [Tooltip("The maximum level.")]
+    public int maxLevel = 5;
+#endregion
+
+#region Public Properties
+    /// <summary>
+    /// A flag indicating whether the game is currently running.
+    /// </summary>
     public bool HasNextLevel
     {
         get
@@ -22,16 +54,26 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    public int EnemyCount
+    /// <summary>
+    /// The number of enemies to spawn in current level.
+    /// </summary>
+    public int EnemyLevelCount
     {
         get
         {
             return currentLevel * 2;
         }
     }
+#endregion
 
-    private int currentEnemyCount;
+#region Private Fields
+    /// <summary>
+    /// The current number of enemies.
+    /// </summary>
+    private int enemyCurrentCount;
+#endregion
 
+#region Unity Callbacks
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -45,28 +87,20 @@ public class LevelManager : MonoBehaviour
 
         SpawnMeshFilter.gameObject.SetActive(false);
     }
+#endregion
 
-    public void IncreaseLevel()
+#region Actions
+    /// <summary>
+    /// Increase the current level.
+    /// </summary>
+    public void LevelIncrease()
     {
         this.currentLevel += 1;
     }
-
-    public void EnemyDestroyed()
-    {
-        this.currentEnemyCount = Mathf.Max(0, this.currentEnemyCount - 1);
-
-        UIManager.Instance.Enemies_UpdateBar(
-            current: this.currentEnemyCount,
-            total: this.EnemyCount
-        );
-
-        GameManager.Instance.IncreaseScore(this.currentLevel);
-        if (this.currentEnemyCount == 0)
-        {
-            GameManager.Instance.Win();
-        }
-    }
-
+    
+    /// <summary>
+    /// Spawns enemies at random positions over a geometry defined by a mesh.
+    /// </summary>
     public void SpawnEnemies()
     {
         if (this.Enemy == null)
@@ -75,76 +109,42 @@ public class LevelManager : MonoBehaviour
         }
 
         var renderer = Enemy.GetComponent<Renderer>();
-        for (int i = 0; i < this.EnemyCount; i++)
+        for (int i = 0; i < this.EnemyLevelCount; i++)
         {
-            var pos = GetSpawnPos(SpawnMeshFilter.mesh);
+            var pos = MeshHelpers.GetRandomPosition(SpawnMeshFilter.mesh);
             GameObject.Instantiate(Enemy, new Vector3(pos.x, pos.y + renderer.bounds.extents.y, pos.z), Quaternion.identity);
         }
         
-        this.currentEnemyCount = EnemyCount;
+        this.enemyCurrentCount = EnemyLevelCount;
 
         UIManager.Instance.Enemies_UpdateBar(
-            current: this.currentEnemyCount,
-            total: this.EnemyCount 
+            current: this.enemyCurrentCount,
+            total: this.EnemyLevelCount 
         );
     }
+#endregion
 
-    public Vector3 GetSpawnPos(Mesh mesh)
+#region Callbacks
+    /// <summary>
+    /// Handles the event when an enemy is destroyed.
+    /// </summary>
+    /// <remarks>
+    /// Updates the score and checks whether the level is won, when all enemies are destroyed.
+    /// </remarks>
+    public void EnemyDestroyed()
     {
-        float[] sizes = GetTriSizes(mesh.triangles, mesh.vertices);
-        float[] cumulativeSizes = new float[sizes.Length];
-        float total = 0;
+        this.enemyCurrentCount = Mathf.Max(0, this.enemyCurrentCount - 1);
 
-        for (int i = 0; i < sizes.Length; i++)
+        UIManager.Instance.Enemies_UpdateBar(
+            current: this.enemyCurrentCount,
+            total: this.EnemyLevelCount
+        );
+
+        GameManager.Instance.IncreaseScore(this.currentLevel);
+        if (this.enemyCurrentCount == 0)
         {
-            total += sizes[i];
-            cumulativeSizes[i] = total;
+            GameManager.Instance.Win();
         }
-
-        //so everything above this point wants to be factored out
-
-        float randomsample = Random.value* total;
-
-        int triIndex = -1;
-        
-        for (int i = 0; i < sizes.Length; i++)
-        {
-            if (randomsample <= cumulativeSizes[i])
-            {
-                triIndex = i;
-                break;
-            }
-        }
-
-        if (triIndex == -1) Debug.LogError("triIndex should never be -1");
-
-        Vector3 a = mesh.vertices[mesh.triangles[triIndex * 3]];
-        Vector3 b = mesh.vertices[mesh.triangles[triIndex * 3 + 1]];
-        Vector3 c = mesh.vertices[mesh.triangles[triIndex * 3 + 2]];
-
-        //generate random barycentric coordinates
-
-        float r = Random.value;
-        float s = Random.value;
-
-        if(r + s >=1)
-        {
-            r = 1 - r;
-            s = 1 - s;
-        }
-        //and then turn them back to a Vector3
-        Vector3 pointOnMesh = a + r*(b - a) + s*(c - a);
-        return pointOnMesh;
     }
-
-    float[] GetTriSizes(int[] tris, Vector3[] verts)
-    {
-        int triCount = tris.Length / 3;
-        float[] sizes = new float[triCount];
-        for (int i = 0; i < triCount; i++)
-        {
-            sizes[i] = .5f*Vector3.Cross(verts[tris[i*3 + 1]] - verts[tris[i*3]], verts[tris[i*3 + 2]] - verts[tris[i*3]]).magnitude;
-        }
-        return sizes;
-    }
+#endregion
 }

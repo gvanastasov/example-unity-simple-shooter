@@ -5,6 +5,7 @@ using UnityEngine;
 /// </summary>
 public class BulletBehaviour : MonoBehaviour
 {
+#region Serializable Fields
     /// <summary>
     /// Speed of the bullet.
     /// </summary>
@@ -14,7 +15,9 @@ public class BulletBehaviour : MonoBehaviour
     /// Lifespan of the bullet.
     /// </summary>
     public int Lifespan = 1;
+#endregion
 
+#region Unity Callbacks
     /// <summary>
     /// Destroy the bullet after a certain amount of time.
     /// </summary>
@@ -30,4 +33,5 @@ public class BulletBehaviour : MonoBehaviour
     {
         this.transform.Translate(Vector3.forward * Speed * Time.deltaTime);
     }
+#endregion
 }

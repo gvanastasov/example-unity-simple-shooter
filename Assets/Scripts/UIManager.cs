@@ -10,7 +10,7 @@ using UnityEngine.UI;
 /// </summary>
 public class UIManager : MonoBehaviour
 {
-#region Props
+#region Serializable Fields
     /// <summary>
     /// Ref to Main Menu GUI.
     /// </summary>

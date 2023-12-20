@@ -3,21 +3,52 @@ using UnityEngine;
 /// <summary>
 /// Represents the behavior of an enemy in the game.
 /// </summary>
+/// <remarks>
+/// This is a very simple and naive implementation of enemy behavior. It should have
+/// been implemented via a proper state machine.
+/// </remarks>
 public class EnemyBehaviour : MonoBehaviour, IDamageable
 {
+#region Defintions
     /// <summary>
     /// Possible states of the enemy.
     /// </summary>
     public enum EnemyState
     {
+        /// <summary>
+        /// The enemy stays in place.
+        /// </summary>
         Idle,
+
+        /// <summary>
+        /// The enemy moves towards a position.
+        /// </summary>
         Move,
+
+        /// <summary>
+        /// The enemy pics a random position and moves towards it.
+        /// </summary>
+        // TODO: Implement this state.
         Wander,
+
+        /// <summary>
+        /// The enemy attacks the player.
+        /// </summary>
         Attack,
+
+        /// <summary>
+        /// The enemy chases the player.
+        /// </summary>
         Chase,
+
+        /// <summary>
+        /// The enemy returns to its original position.
+        /// </summary>
         Return
     }
-    
+#endregion
+
+#region Serializable Fields
     /// <summary>
     /// Current state of the enemy.
     /// </summary>
@@ -58,7 +89,9 @@ public class EnemyBehaviour : MonoBehaviour, IDamageable
             this.health = value;
         }
     }
+#endregion
 
+#region Private Fields
     /// <summary>
     /// Sight sensor of the enemy.
     /// </summary>
@@ -93,7 +126,9 @@ public class EnemyBehaviour : MonoBehaviour, IDamageable
     /// Gun of the enemy.
     /// </summary>
     private GunBehaviour gun = null;
+#endregion
 
+#region Unity Callbacks
     void Awake()
     {
         this.cmp_sightSensor = GetComponent<SightSensor>();
@@ -106,43 +141,48 @@ public class EnemyBehaviour : MonoBehaviour, IDamageable
         {
             case EnemyState.Idle:
             {
-                IdleStateUpdate();
+                IdleState_Update();
                 break;
             }
             case EnemyState.Chase:
             {
-                ChaseStateUpdate();
+                ChaseState_Update();
                 break;
             }
             case EnemyState.Return:
             {
-                ReturnStateUpdate();
+                ReturnState_Update();
                 break;
             }
             case EnemyState.Move:
             {
-                MoveStateUpdate();
+                MoveState_Update();
                 break;
             }
             case EnemyState.Attack:
             {
-                AttackStateUpdate();
+                AttackState_Update();
                 break;
             }
             default:
             {
-                IdleStateUpdate();
+                IdleState_Update();
                 break;
             }
         }
     }
+#endregion
 
+#region FSM
     /// <summary>
-    /// Updates the enemy's idle state.
+    /// Idle state update.
     /// </summary>
-    void IdleStateUpdate()
+    /// <remarks>
+    /// The enemy will transition to <see cref="EnemyState.Chase"/> if the player is detected.
+    /// </remarks>
+    private void IdleState_Update()
     {
-        if (this.cmp_sightSensor.detectedObject != null)
+        if (this.cmp_sightSensor.DetectedObject != null)
         {
             this.CurrentState = EnemyState.Chase;
             this.returnPosition = this.transform.position;
@@ -150,19 +190,26 @@ public class EnemyBehaviour : MonoBehaviour, IDamageable
         }
     }
 
-    void ChaseStateUpdate()
+    /// <summary>
+    /// Chase state update.
+    /// </summary>
+    /// <remarks>
+    /// The enemy will transition to <see cref="EnemyState.Return"/> if the player is lost.
+    /// The enemy will transition to <see cref="EnemyState.Attack"/> if the player is in range.
+    /// </remarks>
+    private void ChaseState_Update()
     {
-        if (this.cmp_sightSensor.detectedObject == null)
+        if (this.cmp_sightSensor.DetectedObject == null)
         {
             this.CurrentState = EnemyState.Return;
         }
         else
         {
-            RotateTowards(this.cmp_sightSensor.detectedObject.transform.position);
+            Rotate(this.cmp_sightSensor.DetectedObject.transform.position);
 
             var inRange = Vector3.Distance(
                 this.transform.position, 
-                this.cmp_sightSensor.detectedObject.transform.position) < this.AttackDistance;
+                this.cmp_sightSensor.DetectedObject.transform.position) < this.AttackDistance;
             if (inRange)
             {
                 this.CurrentState = EnemyState.Attack;
@@ -174,9 +221,16 @@ public class EnemyBehaviour : MonoBehaviour, IDamageable
         }
     }
 
-    void ReturnStateUpdate()
+    /// <summary>
+    /// Return state update.
+    /// </summary>
+    /// <remarks>
+    /// The enemy will transition to <see cref="EnemyState.Chase"/> if the player is detected.
+    /// The enemy will rotate towards <see cref="this.returnPosition"/> and <see cref="EnemyState.Move"/> towards it. 
+    /// </remarks>
+    private void ReturnState_Update()
     {
-        if (this.cmp_sightSensor.detectedObject != null)
+        if (this.cmp_sightSensor.DetectedObject != null)
         {
             this.CurrentState = EnemyState.Chase;
         }
@@ -184,7 +238,7 @@ public class EnemyBehaviour : MonoBehaviour, IDamageable
         {
             if (!IsFacing(this.returnPosition))
             {
-                RotateTowards(this.returnPosition);
+                Rotate(this.returnPosition);
             }
 
             this.CurrentState = EnemyState.Move;
@@ -192,9 +246,16 @@ public class EnemyBehaviour : MonoBehaviour, IDamageable
         }
     }
 
-    void MoveStateUpdate()
+    /// <summary>
+    /// Moves the enemy towards <see cref="this.movePosition"/>.
+    /// </summary>
+    /// <remarks>
+    /// The enemy will transition to <see cref="EnemyState.Idle"/> if it reaches <see cref="this.movePosition"/>.
+    /// The enemy will transition to <see cref="EnemyState.Chase"/> if the player is detected.
+    /// </remarks>
+    private void MoveState_Update()
     {
-        if (this.cmp_sightSensor.detectedObject != null)
+        if (this.cmp_sightSensor.DetectedObject != null)
         {
             this.CurrentState = EnemyState.Chase;
         }
@@ -217,19 +278,26 @@ public class EnemyBehaviour : MonoBehaviour, IDamageable
         }
     }
 
-    void AttackStateUpdate()
+    /// <summary>
+    /// Attack state update - the enemy will shoot at the player, when in range.
+    /// </summary>
+    /// <remarks>
+    /// The enemy will transition to <see cref="EnemyState.Return"/> if the player is lost.
+    /// The enemy will transition to <see cref="EnemyState.Chase"/> if the player is out of range.
+    /// </remarks>
+    private void AttackState_Update()
     {
-        if (this.cmp_sightSensor.detectedObject == null)
+        if (this.cmp_sightSensor.DetectedObject == null)
         {
             this.CurrentState = EnemyState.Return;
         }
         else
         {
-            RotateTowards(this.cmp_sightSensor.detectedObject.transform.position);
+            Rotate(this.cmp_sightSensor.DetectedObject.transform.position);
 
             var inRange = Vector3.Distance(
                 this.transform.position, 
-                this.cmp_sightSensor.detectedObject.transform.position) < this.AttackDistance;
+                this.cmp_sightSensor.DetectedObject.transform.position) < this.AttackDistance;
             if (inRange)
             {
                 Shoot();
@@ -240,8 +308,13 @@ public class EnemyBehaviour : MonoBehaviour, IDamageable
             }
         }
     }
+#endregion
 
-    void Shoot()
+#region Actions
+    /// <summary>
+    /// Shoots the gun of the enemy, with some delay between shots.
+    /// </summary>
+    private void Shoot()
     {
         if (canAttack) 
         {
@@ -262,18 +335,24 @@ public class EnemyBehaviour : MonoBehaviour, IDamageable
         }
     }
 
-    bool IsFacing(Vector3 target)
-    {
-        var direction = Vector3.Normalize(target - this.transform.position);
-        var angle = Vector3.Angle(this.transform.forward, direction);
-        return angle == 0;
-    }
-
-    void RotateTowards(Vector3 target)
+    /// <summary>
+    /// Rotates the enemy towards a world position.
+    /// </summary>
+    /// <param name="target">World position.</param>
+    private void Rotate(Vector3 target)
     {
         this.transform.LookAt(new Vector3(target.x, this.transform.position.y, target.z));
     }
 
+    /// <summary>
+    /// Applies damage to the enemy.
+    /// </summary>
+    /// <remarks>
+    /// The enemy will transition to <see cref="EnemyState.Move"/> if the damage origin is not null.
+    /// The enemy will die if its health reaches 0.
+    /// </remarks>
+    /// <param name="damage">Amount of damage.</param>
+    /// <param name="damageOrigin">The origin of damage.</param>
     public void Damage(int damage, Vector3? damageOrigin)
     {
         this.Health -= damage;
@@ -292,7 +371,7 @@ public class EnemyBehaviour : MonoBehaviour, IDamageable
                 {
                     if (!IsFacing(damageOrigin.Value))
                     {
-                        RotateTowards(damageOrigin.Value);
+                        Rotate(damageOrigin.Value);
                     }
 
                     this.CurrentState = EnemyState.Move;
@@ -303,9 +382,30 @@ public class EnemyBehaviour : MonoBehaviour, IDamageable
         }
     }
 
+    /// <summary>
+    /// Called when the enemy dies.
+    /// </summary>
+    /// <remarks>
+    /// The enemy is removed from the scene.
+    /// </remarks>
     public void Die()
     {
         LevelManager.Instance.EnemyDestroyed();
         Destroy(this.gameObject);
     }
+#endregion
+
+#region Helpers
+    /// <summary>
+    /// Checks whether the enemy is facing a world position.
+    /// </summary>
+    /// <param name="target">World position.</param>
+    /// <returns></returns>
+    private bool IsFacing(Vector3 target)
+    {
+        var direction = Vector3.Normalize(target - this.transform.position);
+        var angle = Vector3.Angle(this.transform.forward, direction);
+        return angle == 0;
+    }
+#endregion
 }
