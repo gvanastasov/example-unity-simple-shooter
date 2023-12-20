@@ -1876,9 +1876,9 @@ MonoBehaviour:
   SpeedForward: 10
   SpeedBackward: 5
   SpeedSide: 8
-  health: 100
   sensitivity: 2
   yRotationLimit: 88
+  health: 100
 --- !u!114 &570177786
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13758,7 +13758,7 @@ MonoBehaviour:
   AttackDamage: 10
   AttackDamageMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 512
   AttackRange: 20
 --- !u!23 &1750564051
 MeshRenderer:

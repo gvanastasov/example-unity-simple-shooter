@@ -4990,10 +4990,10 @@ MonoBehaviour:
   GunPoint: {fileID: 3556655318961895055}
   MagazineSize: 9
   AutoReload: 1
-  Damage: 10
-  DamageMask:
+  AttackDamage: 10
+  AttackDamageMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 256
   AttackRange: 20
 --- !u!82 &5829416197549950099
 AudioSource:
@@ -5231,9 +5231,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SenseDelay: 0.2
-  distance: 20
-  angle: 60
-  obstacles:
+  Distance: 10
+  Angle: 90
+  Obstacles:
     serializedVersion: 2
     m_Bits: 64
-  detectedObject: {fileID: 0}
+  DetectedObject: {fileID: 0}
