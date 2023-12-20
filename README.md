@@ -1,6 +1,6 @@
 # Example Unity Simple Shooter
 
-This repository contains a simple shooting game built with Unity. The game includes various features and uses several external assets.
+This repository contains a simple shooting game built with Unity. The game includes various features and uses several external assets. PS this is merely a fast prototype done under an hour or so, the rest was just fun time exploring unity and whats new.
 
 ## Game Features
 
